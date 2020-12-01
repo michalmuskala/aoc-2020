@@ -1,0 +1,9 @@
+[package]
+name = "aoc-2020"
+version = "0.1.0"
+authors = ["Michał Muskała <michal@muskala.eu>"]
+edition = "2018"
+
+[dependencies]
+aoc-runner
+aoc-runner-derive
