@@ -1,43 +1,41 @@
-use std::cmp::Ordering;
+use std::{cmp::Ordering, num::ParseIntError};
 
 use aoc_runner_derive::{aoc, aoc_generator};
 
 #[aoc_generator(day1)]
-fn parse_input_day1(input: &str) -> Vec<u32> {
-    let mut nums: Vec<u32> = input.lines().map(|l| l.parse().unwrap()).collect();
-    nums.sort_unstable();
-    nums
+fn parse_input_day1(input: &str) -> Result<Vec<u64>, ParseIntError> {
+    let mut array: Vec<u64> = input.lines().map(|l| l.parse()).collect::<Result<_, _>>()?;
+    array.sort_unstable();
+    Ok(array)
 }
 
 #[aoc(day1, part1)]
-fn part1(nums: &[u32]) -> u32 {
-    let mut left = 0;
-    let mut right = nums.len() - 1;
-    while left < right {
-        match (nums[left] + nums[right]).cmp(&2020) {
-            Ordering::Less => left += 1,
-            Ordering::Greater => right -= 1,
-            Ordering::Equal => return nums[left] * nums[right]
-        }
+fn part1(array: &[u64]) -> Option<u64> {
+    match search(array, 0, 2020) {
+        Some((i, j)) => Some(array[i] * array[j]),
+        None => None,
     }
-
-    return 0;
 }
 
 #[aoc(day1, part2)]
-fn part2(nums: &[u32]) -> u32 {
-    for (i, elem) in nums.iter().enumerate() {
-        let mut left = i + 1;
-        let mut right = nums.len() - 1;
-        while left < right {
-            match (nums[left] + nums[right]).cmp(&(2020 - elem)) {
-                Ordering::Less => left += 1,
-                Ordering::Greater => right -= 1,
-                Ordering::Equal => return elem * nums[left] * nums[right]
-            }
+fn part2(array: &[u64]) -> Option<u64> {
+    for (i, elem) in array.iter().enumerate() {
+        if let Some((j, k)) = search(array, i + 1, 2020 - elem) {
+            return Some(elem * array[j] * array[k]);
         }
     }
 
+    None
+}
 
-    return 0;
+fn search(array: &[u64], mut left: usize, target: u64) -> Option<(usize, usize)> {
+    let mut right = array.len() - 1;
+    while left < right {
+        match (array[left] + array[right]).cmp(&target) {
+            Ordering::Less => left += 1,
+            Ordering::Greater => right -= 1,
+            Ordering::Equal => return Some((left, right)),
+        }
+    }
+    return None;
 }
