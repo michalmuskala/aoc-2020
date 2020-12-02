@@ -3,7 +3,7 @@ use std::{cmp::Ordering, num::ParseIntError};
 use aoc_runner_derive::{aoc, aoc_generator};
 
 #[aoc_generator(day1)]
-fn parse_input_day1(input: &str) -> Result<Vec<u64>, ParseIntError> {
+fn parse(input: &str) -> Result<Vec<u64>, ParseIntError> {
     let mut array: Vec<u64> = input.lines().map(|l| l.parse()).collect::<Result<_, _>>()?;
     array.sort_unstable();
     Ok(array)
